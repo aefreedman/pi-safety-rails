@@ -1,0 +1,28 @@
+{
+  "name": "@aefree/pi-safety-rails",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "keywords": [
+    "pi-package"
+  ],
+  "pi": {
+    "extensions": [
+      "./extensions/tool-output-redactor.ts",
+      "./extensions/path-permissions.ts"
+    ]
+  },
+  "peerDependencies": {
+    "@mariozechner/pi-coding-agent": "*"
+  },
+  "description": "Pi safety-focused extensions for shell execution and tool result hygiene.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/aefreedman/pi-safety-rails.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aefreedman/pi-safety-rails/issues"
+  },
+  "homepage": "https://github.com/aefreedman/pi-safety-rails#readme"
+}

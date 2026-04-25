@@ -1,0 +1,10 @@
+{
+  "permission": {
+    "external_directory": {
+      "C:/Windows/**": "deny"
+    },
+    "edit": {
+      "C:/Windows/**": "deny"
+    }
+  }
+}
