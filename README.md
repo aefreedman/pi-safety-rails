@@ -34,20 +34,28 @@ This package provides practical safety rails for Pi:
   - project-local overlay: `.pi/path-permissions.json`
 - The first version intentionally ignores allow rules and only honors `deny`.
 
-Example config:
+Example config with Windows and macOS paths:
 
 ```json
 {
   "permission": {
     "external_directory": {
-      "C:/Windows/**": "deny"
+      "C:/Windows/**": "deny",
+      "/Users/yourname/Library/Keychains/**": "deny"
     },
     "edit": {
-      "C:/Windows/**": "deny"
+      "C:/Windows/**": "deny",
+      "/Users/yourname/.ssh/**": "deny"
     }
   }
 }
 ```
+
+Replace `yourname` with the macOS account name. A trailing `/**` denies both the named directory and its descendants, without matching sibling prefixes.
+
+Deny matching is case-insensitive on Windows and macOS, while denial messages retain the path's original display casing. macOS matching deliberately fails closed: it remains case-insensitive even on a case-sensitive APFS volume, so a differently cased path can be conservatively denied there. Linux matching remains case-sensitive.
+
+Rules are evaluated against both the supplied path and its canonical filesystem destination. Existing symlinks and Windows junctions therefore cannot redirect access into a denied directory; for new files, the nearest existing ancestor is canonicalized before matching.
 
 A copy also ships in this package as `path-permissions.example.json`.
 

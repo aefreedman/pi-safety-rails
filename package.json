@@ -1,8 +1,11 @@
 {
   "name": "@aefree/pi-safety-rails",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
+  "scripts": {
+    "test": "npx --yes tsx --test tests/path-matching.test.ts"
+  },
   "keywords": [
     "pi-package"
   ],

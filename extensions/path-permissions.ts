@@ -2,15 +2,23 @@ import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 import {
   firstMatchingPattern,
   loadDenyRules,
-  normalizeInputPath,
+  normalizeInputPathCandidates,
 } from "./shared/path-permissions";
 
 const FILE_ACCESS_TOOLS = new Set(["read", "grep", "find", "ls"]);
 const FILE_MUTATION_TOOLS = new Set(["write", "edit"]);
 
-function getInputPath(event: { toolName: string; input: Record<string, unknown> }, ctxCwd: string): string {
+function getInputPaths(event: { toolName: string; input: Record<string, unknown> }, ctxCwd: string): string[] {
   const raw = typeof event.input.path === "string" ? event.input.path : undefined;
-  return normalizeInputPath(ctxCwd, raw);
+  return normalizeInputPathCandidates(ctxCwd, raw);
+}
+
+function firstMatchAcrossPaths(paths: string[], patterns: string[]): string | undefined {
+  for (const candidate of paths) {
+    const match = firstMatchingPattern(candidate, patterns);
+    if (match) return match;
+  }
+  return undefined;
 }
 
 export default function pathPermissions(pi: ExtensionAPI) {
@@ -20,10 +28,11 @@ export default function pathPermissions(pi: ExtensionAPI) {
     }
 
     const { rules } = loadDenyRules(ctx.cwd);
-    const resolvedPath = getInputPath(event as { toolName: string; input: Record<string, unknown> }, ctx.cwd);
+    const resolvedPaths = getInputPaths(event as { toolName: string; input: Record<string, unknown> }, ctx.cwd);
+    const resolvedPath = resolvedPaths[0];
 
-    const externalMatch = firstMatchingPattern(resolvedPath, rules.external_directory);
-    const editMatch = firstMatchingPattern(resolvedPath, rules.edit);
+    const externalMatch = firstMatchAcrossPaths(resolvedPaths, rules.external_directory);
+    const editMatch = firstMatchAcrossPaths(resolvedPaths, rules.edit);
 
     if (FILE_ACCESS_TOOLS.has(event.toolName) && externalMatch) {
       if (ctx.hasUI) {

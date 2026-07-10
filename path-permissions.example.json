@@ -1,10 +1,12 @@
 {
   "permission": {
     "external_directory": {
-      "C:/Windows/**": "deny"
+      "C:/Windows/**": "deny",
+      "/Users/yourname/Library/Keychains/**": "deny"
     },
     "edit": {
-      "C:/Windows/**": "deny"
+      "C:/Windows/**": "deny",
+      "/Users/yourname/.ssh/**": "deny"
     }
   }
 }
