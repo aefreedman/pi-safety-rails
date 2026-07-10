@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdirSync, mkdtempSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, realpathSync, rmSync, symlinkSync, writeFileSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
@@ -84,7 +84,8 @@ test("canonical candidates prevent symlink or junction bypasses, including new f
     symlinkSync(protectedDirectory, linkedDirectory, process.platform === "win32" ? "junction" : "dir");
 
     const candidates = normalizeInputPathCandidates(projectDirectory, path.join("linked", "new-secret.txt"));
-    const protectedPattern = `${protectedDirectory.replace(/\\/g, "/")}/**`;
+    const canonicalProtectedDirectory = realpathSync.native(protectedDirectory);
+    const protectedPattern = `${canonicalProtectedDirectory.replace(/\\/g, "/")}/**`;
     assert.equal(candidates.length, 2, `expected lexical and canonical candidates: ${candidates.join(", ")}`);
     assert.equal(
       candidates.some((candidate) => firstMatchingPattern(candidate, [protectedPattern]) === protectedPattern),

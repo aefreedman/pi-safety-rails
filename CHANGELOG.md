@@ -3,6 +3,7 @@
 ## 0.1.2 - 2026-07-10
 
 - Migrated Pi extension imports and peer dependencies to the `@earendil-works` package scope.
+- Fixed the canonical-path test fixture for macOS temporary directories that resolve through `/private/var`.
 
 ## 0.1.1 - 2026-07-09
 
