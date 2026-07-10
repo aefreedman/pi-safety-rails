@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.2 - 2026-07-10
+
+- Migrated Pi extension imports and peer dependencies to the `@earendil-works` package scope.
+
 ## 0.1.1 - 2026-07-09
 
 - Make deny-rule matching case-insensitive on Windows and macOS while preserving original path casing in denial messages.

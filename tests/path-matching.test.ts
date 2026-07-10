@@ -10,53 +10,53 @@ import {
   normalizeInputPathCandidates,
 } from "../extensions/shared/path-matching.ts";
 
-const darwinPattern = "/Users/Aaron/Library/Keychains/**";
+const darwinPattern = "/Users/ExampleUser/Library/Keychains/**";
 
 test("Darwin matching is case-insensitive and returns the original rule casing", () => {
   assert.equal(
-    firstMatchingPattern("/users/aaron/library/keychains/login.keychain-db", [darwinPattern], "darwin"),
+    firstMatchingPattern("/users/exampleuser/library/keychains/login.keychain-db", [darwinPattern], "darwin"),
     darwinPattern,
   );
   assert.equal(
-    firstMatchingPattern("/USERS/AARON/LIBRARY/KEYCHAINS", [darwinPattern], "darwin"),
+    firstMatchingPattern("/USERS/EXAMPLEUSER/LIBRARY/KEYCHAINS", [darwinPattern], "darwin"),
     darwinPattern,
   );
 });
 
 test("Windows matching is case-insensitive while Linux remains case-sensitive", () => {
-  const windowsPattern = "C:/Users/Aaron/Secrets/**";
+  const windowsPattern = "C:/Users/ExampleUser/Secrets/**";
   assert.equal(
-    firstMatchingPattern("c:/users/AARON/secrets/token.txt", [windowsPattern], "win32"),
+    firstMatchingPattern("c:/users/EXAMPLEUSER/secrets/token.txt", [windowsPattern], "win32"),
     windowsPattern,
   );
   assert.equal(
-    firstMatchingPattern("/users/aaron/library/keychains/login.keychain-db", [darwinPattern], "linux"),
+    firstMatchingPattern("/users/exampleuser/library/keychains/login.keychain-db", [darwinPattern], "linux"),
     undefined,
   );
   assert.equal(
-    firstMatchingPattern("/Users/Aaron/Library/Keychains/login.keychain-db", [darwinPattern], "linux"),
+    firstMatchingPattern("/Users/ExampleUser/Library/Keychains/login.keychain-db", [darwinPattern], "linux"),
     darwinPattern,
   );
 });
 
 test("a trailing /** matches its base and descendants but not sibling prefixes", () => {
-  assert.equal(firstMatchingPattern("/Users/Aaron/Secrets", ["/Users/Aaron/Secrets/**"], "darwin"), "/Users/Aaron/Secrets/**");
-  assert.equal(firstMatchingPattern("/Users/Aaron/Secrets/nested/file.txt", ["/Users/Aaron/Secrets/**"], "darwin"), "/Users/Aaron/Secrets/**");
-  assert.equal(firstMatchingPattern("/Users/Aaron/Secrets-old/file.txt", ["/Users/Aaron/Secrets/**"], "darwin"), undefined);
+  assert.equal(firstMatchingPattern("/Users/ExampleUser/Secrets", ["/Users/ExampleUser/Secrets/**"], "darwin"), "/Users/ExampleUser/Secrets/**");
+  assert.equal(firstMatchingPattern("/Users/ExampleUser/Secrets/nested/file.txt", ["/Users/ExampleUser/Secrets/**"], "darwin"), "/Users/ExampleUser/Secrets/**");
+  assert.equal(firstMatchingPattern("/Users/ExampleUser/Secrets-old/file.txt", ["/Users/ExampleUser/Secrets/**"], "darwin"), undefined);
 });
 
 test("relative input paths normalize with injected platform semantics and preserve display casing", () => {
   assert.equal(
-    normalizeInputPath("/Users/Aaron/Project", "../Sensitive/Report.TXT", "darwin"),
-    "/Users/Aaron/Sensitive/Report.TXT",
+    normalizeInputPath("/Users/ExampleUser/Project", "../Sensitive/Report.TXT", "darwin"),
+    "/Users/ExampleUser/Sensitive/Report.TXT",
   );
   assert.equal(
-    normalizeInputPath("C:\\Users\\Aaron\\Project", "..\\Sensitive\\Report.TXT", "win32"),
-    "C:/Users/Aaron/Sensitive/Report.TXT",
+    normalizeInputPath("C:\\Users\\ExampleUser\\Project", "..\\Sensitive\\Report.TXT", "win32"),
+    "C:/Users/ExampleUser/Sensitive/Report.TXT",
   );
   assert.equal(
-    normalizeInputPath("/Users/Aaron/Project", "@../Sensitive/Report.TXT", "darwin"),
-    "/Users/Aaron/Sensitive/Report.TXT",
+    normalizeInputPath("/Users/ExampleUser/Project", "@../Sensitive/Report.TXT", "darwin"),
+    "/Users/ExampleUser/Sensitive/Report.TXT",
   );
 });
 
@@ -65,7 +65,7 @@ test("external_directory and edit deny lists use equivalent matching behavior", 
     external_directory: [darwinPattern],
     edit: [darwinPattern],
   };
-  const target = "/users/aaron/library/keychains/login.keychain-db";
+  const target = "/users/exampleuser/library/keychains/login.keychain-db";
 
   for (const patterns of [rules.external_directory, rules.edit]) {
     assert.equal(firstMatchingPattern(target, patterns, "darwin"), darwinPattern);
