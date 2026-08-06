@@ -61,15 +61,13 @@ A copy also ships in this package as `path-permissions.example.json`.
 
 ## Install
 
-Recommended as a global package.
-
-From GitHub:
+Install from npm:
 
 ```bash
-pi install git:git@github.com:aefreedman/pi-safety-rails.git
+pi install npm:@aefree/pi-safety-rails
 ```
 
-Local development install:
+For local development:
 
 ```bash
 pi install <path-to-pi-safety-rails>

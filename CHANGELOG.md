@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.4 - 2026-08-06
+
+### Added
+
+- Added npm installation guidance and a trusted-publishing workflow for future releases.
+
+### Changed
+
+- Restricted the npm artifact to Pi runtime extensions, the example configuration, and required package documentation.
+- Pinned the test runner as a development dependency for reproducible validation.
 
 ## 0.1.3 - 2026-07-24
 
