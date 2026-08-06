@@ -27,7 +27,7 @@ export default function pathPermissions(pi: ExtensionAPI) {
       return;
     }
 
-    const { rules } = loadDenyRules(ctx.cwd);
+    const { rules } = loadDenyRules(ctx.cwd, ctx.isProjectTrusted());
     const resolvedPaths = getInputPaths(event as { toolName: string; input: Record<string, unknown> }, ctx.cwd);
     const resolvedPath = resolvedPaths[0];
 

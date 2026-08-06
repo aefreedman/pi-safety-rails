@@ -1,6 +1,6 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
-import { getAgentDir } from "@earendil-works/pi-coding-agent";
+import { CONFIG_DIR_NAME, getAgentDir } from "@earendil-works/pi-coding-agent";
 
 export {
   firstMatchingPattern,
@@ -51,12 +51,15 @@ function readConfigFile(filePath: string): PathPermissionsConfig {
   }
 }
 
-export function loadDenyRules(cwd: string): { rules: DenyRules; sources: { globalPath: string; projectPath: string } } {
+export function loadDenyRules(
+  cwd: string,
+  projectTrusted: boolean,
+): { rules: DenyRules; sources: { globalPath: string; projectPath: string } } {
   const globalPath = path.join(getAgentDir(), "path-permissions.json");
-  const projectPath = path.join(cwd, ".pi", "path-permissions.json");
+  const projectPath = path.join(cwd, CONFIG_DIR_NAME, "path-permissions.json");
 
   const globalConfig = readConfigFile(globalPath);
-  const projectConfig = readConfigFile(projectPath);
+  const projectConfig = projectTrusted ? readConfigFile(projectPath) : {};
 
   return {
     rules: {

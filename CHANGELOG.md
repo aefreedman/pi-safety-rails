@@ -10,6 +10,7 @@
 
 - Restricted the npm artifact to Pi runtime extensions, the example configuration, and required package documentation.
 - Pinned the test runner as a development dependency for reproducible validation.
+- Honor Pi project trust and the configured project directory name before loading project-local deny rules.
 
 ## 0.1.3 - 2026-07-24
 
