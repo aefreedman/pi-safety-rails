@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- pin local tsx 4.23.15; require Node >=22.19.0 for the Pi runtime.
+
 ### Fixed
 
 - Redact secrets in structured tool results and preserve typed results when text output is redacted on Pi 0.99.

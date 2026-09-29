@@ -2,6 +2,9 @@
   "name": "@aefree/pi-safety-rails",
   "version": "0.1.6",
   "type": "module",
+  "engines": {
+    "node": ">=22.19.0"
+  },
   "files": [
     "extensions/",
     "path-permissions.example.json"
@@ -41,6 +44,6 @@
   },
   "devDependencies": {
     "@earendil-works/pi-coding-agent": "0.99.1",
-    "tsx": "4.23.9"
+    "tsx": "4.23.15"
   }
 }
