@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+### Fixed
+
+- Redact secrets in structured tool results and preserve typed results when text output is redacted on Pi 0.99.
+
+### Changed
+
+- Update the Pi development validation baseline to 0.99.1 while retaining the optional wildcard runtime peer.
+
 ## 0.1.6 - 2026-09-21
 
 ### Changed

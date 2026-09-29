@@ -17,7 +17,8 @@ This package provides practical safety rails for Pi:
 ## Tool output redaction
 
 - Redacts token-like secrets from tool outputs before they are shown to the model/session.
-- Applies to text content and nested string fields in tool result details.
+- Applies to text content and nested string fields in tool result details and structured content.
+- Preserves clean structured results when text is redacted, so typed tool callers retain their data.
 
 ## Path permissions
 
