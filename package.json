@@ -1,6 +1,6 @@
 {
   "name": "@aefree/pi-safety-rails",
-  "version": "0.1.6",
+  "version": "0.2.0",
   "type": "module",
   "engines": {
     "node": ">=22.19.0"
@@ -24,7 +24,7 @@
   "peerDependencies": {
     "@earendil-works/pi-coding-agent": "*"
   },
-  "description": "Pi safety-focused extensions for shell execution and tool result hygiene.",
+  "description": "Pi safety-focused extensions for file-tool path permissions and tool result hygiene.",
   "license": "MIT",
   "publishConfig": {
     "access": "public"

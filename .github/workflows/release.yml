@@ -2,20 +2,92 @@ name: Publish to npm
 
 on:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing immutable release tag (v<package version>)
+        required: true
+        type: string
+      commit:
+        description: Full reviewed release commit SHA
+        required: true
+        type: string
 
 permissions:
   contents: read
   id-token: write
 
+concurrency:
+  group: npm-release
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
+      - name: Validate dispatch identity
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_COMMIT: ${{ inputs.commit }}
+        run: |
+          [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
+          [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
       - uses: actions/checkout@v4
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+          fetch-depth: 0
+          persist-credentials: false
       - uses: actions/setup-node@v4
         with:
-          node-version: 22.14.0
+          node-version: 22.19.0
+      - name: Bind tag, commit, manifest and changelog
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+          RELEASE_COMMIT: ${{ inputs.commit }}
+        run: |
+          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
+          test "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" = "$RELEASE_COMMIT"
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+          if (`v${pkg.version}` !== process.env.RELEASE_TAG) throw new Error('Tag/version mismatch');
+          const changelog = readFileSync('CHANGELOG.md', 'utf8');
+          if (!changelog.split(/\r?\n/).some(line => line.startsWith(`## ${pkg.version} - `))) {
+            throw new Error('Missing finalized changelog version');
+          }
+          NODE
       - run: npm install --global npm@11.5.1
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm test
-      - run: npm publish --access public --provenance
+      - name: Review pack inventory
+        run: |
+          npm pack --dry-run --json > "$RUNNER_TEMP/pack.json"
+          cat "$RUNNER_TEMP/pack.json"
+          node --input-type=module - "$RUNNER_TEMP/pack.json" <<'NODE'
+          import { readFileSync } from 'node:fs';
+          const [pack] = JSON.parse(readFileSync(process.argv[2], 'utf8'));
+          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
+          const expected = new Set([
+            'LICENSE', 'README.md', 'package.json', 'path-permissions.example.json',
+            'extensions/path-permissions.ts', 'extensions/tool-output-redactor.ts',
+            'extensions/shared/path-matching.ts', 'extensions/shared/path-permissions.ts',
+            'extensions/shared/redaction.ts',
+          ]);
+          if (pack.name !== pkg.name || pack.version !== pkg.version || pack.files.length !== expected.size ||
+              pack.files.some(file => !expected.delete(file.path)) || expected.size) {
+            throw new Error('Unexpected packed identity or files');
+          }
+          NODE
+          test -z "$(git status --porcelain)"
+      - name: Reconcile registry identity before publish or retry
+        id: registry
+        env:
+          RELEASE_COMMIT: ${{ inputs.commit }}
+        run: node scripts/release-identity.mjs preflight
+      - name: Publish missing immutable version
+        if: steps.registry.outputs.published != 'true'
+        run: npm publish --access public --provenance
+      - name: Verify published version and gitHead (also on matching retries)
+        env:
+          RELEASE_COMMIT: ${{ inputs.commit }}
+        run: node scripts/release-identity.mjs postpublish

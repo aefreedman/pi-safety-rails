@@ -2,7 +2,7 @@
 
 ## Unreleased
 
-- pin local tsx 4.23.15; require Node >=22.19.0 for the Pi runtime.
+## 0.2.0 - 2026-09-29
 
 ### Fixed
 
@@ -11,6 +11,9 @@
 ### Changed
 
 - Update the Pi development validation baseline to 0.99.1 while retaining the optional wildcard runtime peer.
+- Pin local tsx 4.23.15 and require Node >=22.19.0 for the Pi runtime.
+- Clarify that path permissions cover only the named file tools, not shell containment or arbitrary tools.
+- Validate immutable release tag/version/commit identity, tests and pack inventory before publishing; reconcile matching retries and verify the published npm gitHead.
 
 ## 0.1.6 - 2026-09-21
 

@@ -1,6 +1,11 @@
 # Pi Safety Rails
 
-Pi package containing safety-focused extensions for shell execution and tool-result hygiene.
+Pi package containing safety-focused extensions for file-tool path permissions and tool-result hygiene.
+
+## Requirements
+
+- Node.js >=22.19.0.
+- Latest stable Pi (validated with 0.99.1). These extensions run inside the Pi host; the optional Pi peer is not a standalone-library contract.
 
 ## Included extensions
 
@@ -22,7 +27,8 @@ This package provides practical safety rails for Pi:
 
 ## Path permissions
 
-- Deny-only path blocking for file-oriented tools.
+- Deny-only path blocking for the six file-oriented tools listed below.
+- Not a sandbox or shell containment: rules do not block `bash`, other shell commands, or arbitrary/custom tools. Tool-output redaction does not prevent secret access or execution and cannot guarantee detection of every secret.
 - Current v1 target tools:
   - `read`
   - `write`
