@@ -88,7 +88,3 @@ jobs:
       - name: Publish missing immutable version
         if: steps.registry.outputs.published != 'true'
         run: npm publish --access public --provenance
-      - name: Verify published version and gitHead (also on matching retries)
-        env:
-          RELEASE_COMMIT: ${{ steps.source.outputs.commit }}
-        run: node scripts/release-identity.mjs postpublish

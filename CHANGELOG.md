@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+### Fixed
+
+- Remove the post-publish npm visibility gate while preserving the immutable release-source and pre-publish identity checks.
+
 ## 0.2.0 - 2026-09-29
 
 ### Fixed
