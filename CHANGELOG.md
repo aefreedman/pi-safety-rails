@@ -14,6 +14,7 @@
 - Pin local tsx 4.23.15 and require Node >=22.19.0 for the Pi runtime.
 - Clarify that path permissions cover only the named file tools, not shell containment or arbitrary tools.
 - Validate immutable release tag/version/commit identity, tests and pack inventory before publishing; reconcile matching retries and verify the published npm gitHead.
+- Publish stable GitHub releases automatically through trusted publishing, while retaining explicit tag/commit dispatch for recovery.
 
 ## 0.1.6 - 2026-09-21
 

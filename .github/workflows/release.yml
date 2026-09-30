@@ -1,6 +1,8 @@
 name: Publish to npm
 
 on:
+  release:
+    types: [published]
   workflow_dispatch:
     inputs:
       tag:
@@ -22,40 +24,39 @@ concurrency:
 
 jobs:
   publish:
+    if: github.event_name == 'workflow_dispatch' || !github.event.release.prerelease
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - name: Validate dispatch identity
+      - name: Validate event identity before checkout
+        id: event
         env:
-          RELEASE_TAG: ${{ inputs.tag }}
-          RELEASE_COMMIT: ${{ inputs.commit }}
+          RELEASE_TAG: ${{ github.event.release.tag_name || inputs.tag }}
+          REVIEWED_COMMIT: ${{ inputs.commit }}
         run: |
+          set -euo pipefail
           [[ "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]]
-          [[ "$RELEASE_COMMIT" =~ ^[0-9a-f]{40}$ ]]
+          case "$GITHUB_EVENT_NAME" in
+            release) ;;
+            workflow_dispatch) [[ "$REVIEWED_COMMIT" =~ ^[0-9a-f]{40}$ ]] ;;
+            *) exit 1 ;;
+          esac
+          echo "tag=$RELEASE_TAG" >> "$GITHUB_OUTPUT"
       - uses: actions/checkout@v4
         with:
-          ref: refs/tags/${{ inputs.tag }}
+          ref: refs/tags/${{ steps.event.outputs.tag }}
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
         with:
           node-version: 22.19.0
       - name: Bind tag, commit, manifest and changelog
+        id: source
         env:
-          RELEASE_TAG: ${{ inputs.tag }}
-          RELEASE_COMMIT: ${{ inputs.commit }}
-        run: |
-          test "$(git rev-parse HEAD)" = "$RELEASE_COMMIT"
-          test "$(git rev-parse "refs/tags/$RELEASE_TAG^{commit}")" = "$RELEASE_COMMIT"
-          node --input-type=module <<'NODE'
-          import { readFileSync } from 'node:fs';
-          const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
-          if (`v${pkg.version}` !== process.env.RELEASE_TAG) throw new Error('Tag/version mismatch');
-          const changelog = readFileSync('CHANGELOG.md', 'utf8');
-          if (!changelog.split(/\r?\n/).some(line => line.startsWith(`## ${pkg.version} - `))) {
-            throw new Error('Missing finalized changelog version');
-          }
-          NODE
+          RELEASE_TAG: ${{ steps.event.outputs.tag }}
+          REVIEWED_COMMIT: ${{ inputs.commit }}
+          RELEASE_PRERELEASE: ${{ github.event.release.prerelease }}
+        run: node scripts/release-source.mjs
       - run: npm install --global npm@11.5.1
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm test
@@ -82,12 +83,12 @@ jobs:
       - name: Reconcile registry identity before publish or retry
         id: registry
         env:
-          RELEASE_COMMIT: ${{ inputs.commit }}
+          RELEASE_COMMIT: ${{ steps.source.outputs.commit }}
         run: node scripts/release-identity.mjs preflight
       - name: Publish missing immutable version
         if: steps.registry.outputs.published != 'true'
         run: npm publish --access public --provenance
       - name: Verify published version and gitHead (also on matching retries)
         env:
-          RELEASE_COMMIT: ${{ inputs.commit }}
+          RELEASE_COMMIT: ${{ steps.source.outputs.commit }}
         run: node scripts/release-identity.mjs postpublish
