@@ -1,6 +1,6 @@
 {
   "name": "@aefree/pi-safety-rails",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "engines": {
     "node": ">=22.19.0"
@@ -43,7 +43,7 @@
     }
   },
   "devDependencies": {
-    "@earendil-works/pi-coding-agent": "0.99.1",
+    "@earendil-works/pi-coding-agent": "1.2.0",
     "tsx": "4.23.15"
   }
 }

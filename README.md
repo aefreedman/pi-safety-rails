@@ -5,7 +5,7 @@ Pi package containing safety-focused extensions for file-tool path permissions a
 ## Requirements
 
 - Node.js >=22.19.0.
-- Latest stable Pi (validated with 0.99.1). These extensions run inside the Pi host; the optional Pi peer is not a standalone-library contract.
+- Latest stable Pi (validated with the exact development dependency in `package.json`). These extensions run inside the Pi host; the optional Pi peer is not a standalone-library contract.
 
 ## Included extensions
 

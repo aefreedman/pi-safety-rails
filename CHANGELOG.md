@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+## 0.2.1 - 2026-10-13
+
+- Refresh exact Pi development dependencies and reproducible lockfiles to 1.2.0; keep runtime peers unchanged.
+
 ### Fixed
 
 - Remove the post-publish npm visibility gate while preserving the immutable release-source and pre-publish identity checks.
