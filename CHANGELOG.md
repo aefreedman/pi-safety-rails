@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.2.2 - 2026-11-02
+
 ### Changed
 
 - Validate against exact Pi 1.5.0 development dependencies while retaining the optional wildcard runtime peer.

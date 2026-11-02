@@ -69,7 +69,7 @@ jobs:
           const [pack] = JSON.parse(readFileSync(process.argv[2], 'utf8'));
           const pkg = JSON.parse(readFileSync('package.json', 'utf8'));
           const expected = new Set([
-            'LICENSE', 'README.md', 'package.json', 'path-permissions.example.json',
+            'LICENSE', 'README.md', 'CHANGELOG.md', 'package.json', 'path-permissions.example.json',
             'extensions/path-permissions.ts', 'extensions/tool-output-redactor.ts',
             'extensions/shared/path-matching.ts', 'extensions/shared/path-permissions.ts',
             'extensions/shared/redaction.ts',
