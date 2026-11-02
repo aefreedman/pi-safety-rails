@@ -40,6 +40,7 @@ This package provides practical safety rails for Pi:
   - user-global: `~/.pi/agent/path-permissions.json`
   - project-local overlay: `.pi/path-permissions.json`
 - The first version intentionally ignores allow rules and only honors `deny`.
+- Project-local rules load only when Pi trusts the current project. Saved distrust applies even to AGENTS-only projects. Project rules can add denials but cannot weaken global denials.
 
 Example config with Windows and macOS paths:
 
