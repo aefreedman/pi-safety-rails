@@ -6,12 +6,8 @@
 
 ### Changed
 
-- Validate against exact Pi 1.5.0 development dependencies while retaining the optional wildcard runtime peer.
-- Include the root changelog in npm artifacts for Pi extension update discovery.
-
-### Tests
-
-- Exercise real-host saved distrust (including AGENTS-only projects), deny-only overlays, validation/coercion, zero invalid mutation dispatch, and error redaction with isolated fixtures and a synthetic transport.
+- Updated for Pi 1.5.0.
+- Include release notes in Pi's extension-update notices.
 
 ## 0.2.1 - 2026-10-13
 
